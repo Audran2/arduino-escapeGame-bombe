@@ -25,11 +25,12 @@ unsigned long startTime;
 
 bool countdown = false;
 
+const unsigned long GAME_DURATION_MS = 3600000UL;
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 void getTime(char *psz, bool f = true) {
-  int total_seconds = 60 * 60;
+  int total_seconds = GAME_DURATION_MS / 1000;
   int elapsed_seconds = (millis() / 1000) % total_seconds;  // On calcule le nombre de secondes écoulées depuis le début en prenant le reste de la division de millis() par 1000 par le nombre total de secondes
 
   int remaining_seconds = total_seconds - elapsed_seconds;  // On calcule le nombre de secondes restantes en soustrayant les secondes écoulées du nombre total de secondes
@@ -141,12 +142,11 @@ void setup() {
   lcd.print("Entrer code :");
 
   // initialise la matrice et les paramètres d'affichage
-  P.begin(2);
-  P.setZone(0, 0, MAX_DEVICES - 5);
-  P.setZone(1, MAX_DEVICES - 4, MAX_DEVICES - 1);
-  P.setFont(1, numeric7Seg);
+  P.begin(1);
+  P.setZone(0, 0, MAX_DEVICES - 1);
+  P.setFont(0, numeric7Seg);
   P.setInvert(false);
-  P.displayZoneText(1, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+  P.displayZoneText(0, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
   getTime(szTime);  // Récupère le temps actuel et le stocke dans szTime
 }
 
@@ -187,8 +187,8 @@ void loop() {
     P.getPause();
   } else {
     getTime(szTime);
-    P.displayZoneText(1, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
-    if (millis() - startTime >= 3600000) {
+    P.displayZoneText(0, szTime, PA_CENTER, SPEED_TIME, PAUSE_TIME, PA_PRINT, PA_NO_EFFECT);
+    if (millis() - startTime >= GAME_DURATION_MS) {
       losegame();
       while (1) {}
     }

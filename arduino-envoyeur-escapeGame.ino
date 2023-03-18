@@ -20,6 +20,8 @@ bool servoNineSent = false;
 bool goodCodeSent = false;
 bool wrongCodeSent = false;
 
+char code[5];
+
 char keys[ROW_NUM][COLUMN_NUM] = {
   { '1', '2', '3', 'A' },
   { '4', '5', '6', 'B' },
@@ -57,7 +59,6 @@ void loop() {
   int buttonStateEnd = digitalRead(button_end);
   int buttonStateServo = digitalRead(button_servo);
   static int count = 0;
-  char code[5];
   char key = keypad.getKey();
   unsigned long currentMillis = millis();
 
@@ -73,7 +74,12 @@ void loop() {
     }
     if (buttonStateServo == LOW && winGameSent) {
       foundCode = false;
+      servoZeroSent = false;
+      winGameSent = false;
       servoNineSent = false;
+      goodCodeSent = false;
+      wrongCodeSent = false;
+      count = 0;
     }
   } else {
     if (!servoNineSent) {
